@@ -1,6 +1,8 @@
 import pyodbc
 import os
-from accessflow.constants.general import DBQ, DRIVER_ACCESS
+import pandas as pd
+from accessflow.constants.general import DRIVER_ACCESS
+from accessflow.core.types import DataTable, dataframe_to_datatable
 
 class AccessUtils:
     def __init__(self, path_file_access):   
@@ -18,13 +20,24 @@ class AccessUtils:
             f"DBQ={self.path_file_access};"
         )
         self._conn = pyodbc.connect(conn_str)
-       
-    def transfer_spreadsheet(self):
-        pass
+        
+    def test_connection(self) -> tuple[bool, str]:
+        try:
+            self.connect()
+            if self._conn:
+                self.disconnect()
+            return True, ""
+        except Exception as err:
+            return False, str(err)
     
     def commit(self):
         if self._conn is not None:
             self._conn.commit()
+            
+    def execute_query(self, query) -> DataTable:
+        dataframe = pd.read_sql(query, self._conn)
+        data_table = dataframe_to_datatable(dataframe)
+        return data_table
     
     def disconnect(self):
         if self._conn is not None:

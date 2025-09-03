@@ -1,3 +1,3 @@
-from .types import DataTable
+from .types import DataTable, dataframe_to_datatable
 
-__all__ = ["DataTable"]
+__all__ = ["DataTable", "dataframe_to_datatable"]

@@ -17,7 +17,7 @@ class ExcelUtils:
     def open(self):
         pass  
     
-    def read_worksheet(self) :
+    def read_worksheet(self) -> DataTable:
         pass  
     
     def close(self):
