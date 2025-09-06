@@ -34,11 +34,19 @@ class AccessUtils:
         if self._conn is not None:
             self._conn.commit()
             
-    def execute_query(self, query) -> DataTable:
+    def read_sql(self, query) -> DataTable:
         dataframe = pd.read_sql(query, self._conn)
         data_table = dataframe_to_datatable(dataframe)
         return data_table
     
+    def execute_query(self, query) -> tuple[bool, str]:
+        try:
+            self._cursor = self._conn.cursor()
+            self._cursor.execute(query)
+            return True, ""
+        except Exception as err:
+            return False, str(err)
+
     def disconnect(self):
         if self._conn is not None:
             self._conn.close()
